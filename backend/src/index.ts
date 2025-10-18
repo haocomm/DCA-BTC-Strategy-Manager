@@ -22,6 +22,7 @@ import exchangeRoutes from './routes/exchanges';
 import executionRoutes from './routes/executions';
 import notificationRoutes from './routes/notifications';
 import externalRoutes from './routes/external';
+import exportRoutes from './routes/export';
 
 // Load environment variables
 dotenv.config();
@@ -80,6 +81,7 @@ async function startServer() {
     app.use('/api/executions', authMiddleware, executionRoutes);
     app.use('/api/notifications', authMiddleware, notificationRoutes);
     app.use('/api/external', externalRoutes); // No auth for webhooks
+    app.use('/api/export', authMiddleware, exportRoutes);
 
     // Setup WebSocket
     setupWebSocket(wss);
