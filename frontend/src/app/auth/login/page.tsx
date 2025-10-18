@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
@@ -19,24 +20,21 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      // TODO: Implement actual login logic
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
       })
 
-      const data = await response.json()
-
-      if (data.success) {
+      if (result?.ok) {
         toast.success('Login successful!')
-        // Store token in localStorage or cookies
-        localStorage.setItem('token', data.data.token)
-        router.push('/dashboard')
+        // Get session to verify authentication
+        const session = await getSession()
+        if (session) {
+          router.push('/dashboard')
+        }
       } else {
-        toast.error(data.error || 'Login failed')
+        toast.error('Invalid email or password')
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.')
