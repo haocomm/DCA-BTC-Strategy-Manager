@@ -135,6 +135,20 @@ router.post('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
     },
   });
 
+  // Schedule the strategy if it's active
+  if (strategy.isActive) {
+    const { executionService } = await import('../services/executionService');
+    await executionService.scheduleStrategy(strategy.id);
+  }
+
+  // Send notification
+  const { notificationService } = await import('../services/notificationService');
+  await notificationService.sendStrategyCreated(req.user!.id, {
+    strategyName: strategy.name,
+    pair: strategy.pair,
+    amount: strategy.amount,
+  });
+
   logger.info(`Strategy created: ${strategy.id} by user ${req.user!.id}`);
 
   res.status(201).json({
@@ -233,6 +247,15 @@ router.patch('/:id/toggle', asyncHandler(async (req: AuthenticatedRequest, res) 
     },
   });
 
+  // Schedule or unschedule based on activation status
+  const { executionService } = await import('../services/executionService');
+
+  if (updatedStrategy.isActive) {
+    await executionService.scheduleStrategy(id);
+  } else {
+    await executionService.unscheduleStrategy(id);
+  }
+
   logger.info(`Strategy ${updatedStrategy.isActive ? 'activated' : 'deactivated'}: ${id} by user ${req.user!.id}`);
 
   res.json({
@@ -325,5 +348,39 @@ function calculateNextExecution(frequency: string, lastExecution?: Date): Date |
 
   return next;
 }
+
+// Manual execution of a strategy
+router.post('/:id/execute', asyncHandler(async (req: AuthenticatedRequest, res) => {
+  const { id } = req.params;
+
+  const strategy = await prisma.strategy.findFirst({
+    where: {
+      id,
+      userId: req.user!.id,
+      isActive: true,
+    },
+  });
+
+  if (!strategy) {
+    throw createError('Strategy not found or inactive', 404, 'STRATEGY_NOT_FOUND');
+  }
+
+  const { executionService } = await import('../services/executionService');
+  const result = await executionService.executeStrategy(id, 'manual');
+
+  if (result.success) {
+    logger.info(`Manual execution completed for strategy ${id} by user ${req.user!.id}`);
+    res.json({
+      success: true,
+      data: result,
+    });
+  } else {
+    logger.error(`Manual execution failed for strategy ${id}: ${result.error}`);
+    res.status(400).json({
+      success: false,
+      error: result.error,
+    });
+  }
+}));
 
 export default router;
