@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  avatar            String?
+  emailVerified     DateTime?
+  isActive          Boolean   @default(true)
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  strategies        Strategy[]
+  exchanges         Exchange[]
+  notifications     Notification[]
+  sessions          Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Exchange {
+  id          String       @id @default(cuid())
+  userId      String
+  name        String
+  type        ExchangeType
+  apiKey      String       // encrypted
+  apiSecret   String       // encrypted
+  passphrase  String?      // encrypted (for exchanges like Coinbase)
+  testnet     Boolean      @default(false)
+  isActive    Boolean      @default(true)
+  lastSyncAt  DateTime?
+  balanceData Json?        // cached balance data
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  strategies  Strategy[]
+
+  @@map("exchanges")
+}
+
+model Strategy {
+  id          String             @id @default(cuid())
+  userId      String
+  exchangeId  String
+  name        String
+  description String?
+  pair        String
+  baseCurrency String
+  quoteCurrency String
+  amount      Float
+  amountType  AmountType
+  frequency   Frequency
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean            @default(true)
+  conditions  StrategyCondition[]
+  settings    Json?              // additional strategy settings
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  // Relations
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exchange    Exchange           @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+  executions  Execution[]
+
+  @@map("strategies")
+}
+
+model StrategyCondition {
+  id          String           @id @default(cuid())
+  strategyId  String
+  type        ConditionType
+  operator    ConditionOperator
+  value       Float
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  strategy Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+
+  @@map("strategy_conditions")
+}
+
+model Execution {
+  id              String         @id @default(cuid())
+  strategyId      String
+  exchangeOrderId String?        @unique
+  amount          Float
+  price           Float
+  quantity        Float
+  fee             Float?
+  status          ExecutionStatus
+  type            ExecutionType
+  errorMessage    String?
+  metadata        Json?          // additional execution data
+  timestamp       DateTime       @default(now())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  strategy        Strategy       @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+
+  @@map("executions")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  channel   NotificationChannel
+  title     String
+  message   String
+  data      Json?            // additional notification data
+  isRead    Boolean          @default(false)
+  sentAt    DateTime?
+  error     String?          // delivery error message
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // Relations
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model ScheduledJob {
+  id          String   @id @default(cuid())
+  strategyId  String   @unique
+  cronExpression String
+  nextRunAt   DateTime
+  lastRunAt   DateTime?
+  isActive    Boolean  @default(true)
+  runCount    Int      @default(0)
+  failureCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("scheduled_jobs")
+}
+
+model PriceData {
+  id        String   @id @default(cuid())
+  pair      String
+  price     Float
+  volume    Float?
+  timestamp DateTime @default(now())
+
+  @@unique([pair, timestamp])
+  @@map("price_data")
+}
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  level     LogLevel
+  message   String
+  metadata  Json?
+  timestamp DateTime @default(now())
+
+  @@map("system_logs")
+}
+
+model UserSettings {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  timezone                String   @default("UTC")
+  currency                String   @default("USD")
+  language                String   @default("en")
+  emailNotifications      Boolean  @default(true)
+  lineNotifications       Boolean  @default(false)
+  telegramNotifications   Boolean  @default(false)
+  lineAccessToken         String?  // encrypted
+  lineUserId              String?  // encrypted
+  telegramBotToken        String?  // encrypted
+  telegramChatId          String?  // encrypted
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@map("user_settings")
+}
+
+// Enums
+enum ExchangeType {
+  BINANCE
+  COINBASE
+  KRAKEN
+}
+
+enum AmountType {
+  FIXED
+  PERCENTAGE
+}
+
+enum Frequency {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+enum ExecutionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ExecutionType {
+  SCHEDULED
+  MANUAL
+  CONDITIONAL
+}
+
+enum ConditionType {
+  PRICE_ABOVE
+  PRICE_BELOW
+  RSI_ABOVE
+  RSI_BELOW
+  VOLUME_ABOVE
+}
+
+enum ConditionOperator {
+  GREATER_THAN
+  LESS_THAN
+  EQUAL
+  GREATER_EQUAL
+  LESS_EQUAL
+}
+
+enum NotificationType {
+  EXECUTION_SUCCESS
+  EXECUTION_FAILED
+  STRATEGY_CREATED
+  STRATEGY_UPDATED
+  STRATEGY_DELETED
+  PRICE_ALERT
+  SYSTEM_ANNOUNCEMENT
+}
+
+enum NotificationChannel {
+  EMAIL
+  LINE
+  TELEGRAM
+}
+
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}
