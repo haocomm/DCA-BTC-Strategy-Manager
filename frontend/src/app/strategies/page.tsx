@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Plus, Play, Pause, Edit, MoreHorizontal, Filter } from 'lucide-react'
-import { formatCurrency, getStatusColor, formatDate, getRelativeTime } from '@/lib/utils'
+import { formatCurrency, getStatusColor, formatDate } from '@/lib/utils'
+import { RelativeTime } from '@/components/ui/RelativeTime'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu'
 import { api } from '@/lib/api'
 import toast from 'react-hot-toast'
@@ -212,8 +213,9 @@ export default function StrategiesPage() {
                         {strategy.isActive && strategy.nextExecution && (
                           <>
                             <span className="text-gray-400">•</span>
-                            <span className="hidden sm:inline">Next: {getRelativeTime(strategy.nextExecution)}</span>
-                            <span className="sm:hidden">Next: {getRelativeTime(strategy.nextExecution, true)}</span>
+                            <span className="hidden sm:inline">Next: </span>
+                            <span className="sm:hidden">Next: </span>
+                            <RelativeTime date={strategy.nextExecution} />
                           </>
                         )}
                       </div>

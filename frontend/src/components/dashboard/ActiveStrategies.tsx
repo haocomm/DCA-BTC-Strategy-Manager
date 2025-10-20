@@ -3,8 +3,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { RelativeTime } from '@/components/ui/RelativeTime'
 import { Play, Pause, Edit, MoreHorizontal } from 'lucide-react'
-import { getStatusColor, formatDate, getRelativeTime } from '@/lib/utils'
+import { getStatusColor, formatDate } from '@/lib/utils'
 
 export function ActiveStrategies() {
   // Mock data - replace with actual API calls
@@ -81,7 +82,8 @@ export function ActiveStrategies() {
                   </div>
                   {strategy.isActive && strategy.nextExecution && (
                     <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                      <span>Next: {getRelativeTime(strategy.nextExecution)}</span>
+                      <span>Next: </span>
+                      <RelativeTime date={strategy.nextExecution} />
                       <span className="text-gray-400">•</span>
                       <span>{formatDate(strategy.nextExecution, 'short')}</span>
                     </div>

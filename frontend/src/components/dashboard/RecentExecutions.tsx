@@ -2,7 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { formatCurrency, formatCrypto, getStatusColor, getRelativeTime } from '@/lib/utils'
+import { RelativeTime } from '@/components/ui/RelativeTime'
+import { formatCurrency, formatCrypto, getStatusColor } from '@/lib/utils'
 
 export function RecentExecutions() {
   // Mock data - replace with actual API calls
@@ -82,9 +83,7 @@ export function RecentExecutions() {
                     <span className="text-red-600">Execution failed</span>
                   )}
                 </div>
-                <div className="text-xs text-gray-500">
-                  {getRelativeTime(execution.timestamp)}
-                </div>
+                <RelativeTime date={execution.timestamp} />
               </div>
               <div className="text-right sm:text-left sm:ml-4">
                 <div className="font-medium text-sm sm:text-base">
