@@ -46,6 +46,14 @@ export default function ExchangesPage() {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [connectionForm, setConnectionForm] = useState({
+    name: '',
+    type: ExchangeType.BINANCE,
+    apiKey: '',
+    apiSecret: '',
+    testnet: false,
+  })
 
   useEffect(() => {
     loadExchanges()
@@ -67,11 +75,63 @@ export default function ExchangesPage() {
   const testConnection = async (id: string) => {
     try {
       toast.loading('Testing connection...', { id: 'test-connection' })
-      // TODO: Implement test connection API
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate API call
-      toast.success('Connection test successful!', { id: 'test-connection' })
+      const response = await api.get(`/exchanges/${id}/balances`)
+      if (response.success) {
+        toast.success('Connection test successful!', { id: 'test-connection' })
+      } else {
+        toast.error('Connection test failed', { id: 'test-connection' })
+      }
     } catch (error) {
       toast.error('Connection test failed', { id: 'test-connection' })
+    }
+  }
+
+  const handleConnectExchange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsConnecting(true)
+
+    try {
+      // First test the connection
+      const testResponse = await api.post('/exchanges/test-connection', {
+        name: connectionForm.name || exchangeConfigs[connectionForm.type].displayName,
+        type: connectionForm.type,
+        apiKey: connectionForm.apiKey,
+        apiSecret: connectionForm.apiSecret,
+        testnet: connectionForm.testnet,
+      })
+
+      if (!testResponse.success) {
+        toast.error(testResponse.error || 'Connection test failed')
+        return
+      }
+
+      // If test passes, save the exchange
+      const response = await api.post('/exchanges', {
+        name: connectionForm.name || exchangeConfigs[connectionForm.type].displayName,
+        type: connectionForm.type,
+        apiKey: connectionForm.apiKey,
+        apiSecret: connectionForm.apiSecret,
+        testnet: connectionForm.testnet,
+      })
+
+      if (response.success) {
+        toast.success('Exchange connected successfully!')
+        setShowAddModal(false)
+        setConnectionForm({
+          name: '',
+          type: ExchangeType.BINANCE,
+          apiKey: '',
+          apiSecret: '',
+          testnet: false,
+        })
+        loadExchanges() // Reload the exchanges list
+      } else {
+        toast.error(response.error || 'Failed to connect exchange')
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Failed to connect exchange')
+    } finally {
+      setIsConnecting(false)
     }
   }
 
@@ -246,15 +306,117 @@ export default function ExchangesPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
-                Exchange connection form will be implemented in the next step.
-              </p>
-              <div className="flex justify-end gap-2 mt-6">
-                <Button variant="outline" onClick={() => setShowAddModal(false)}>
-                  Cancel
-                </Button>
-                <Button disabled>Coming Soon</Button>
-              </div>
+              <form onSubmit={handleConnectExchange} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Exchange Type
+                  </label>
+                  <select
+                    value={connectionForm.type}
+                    onChange={(e) => setConnectionForm(prev => ({
+                      ...prev,
+                      type: e.target.value as ExchangeType
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isConnecting}
+                  >
+                    {Object.entries(exchangeConfigs).map(([type, config]) => (
+                      <option key={type} value={type}>
+                        {config.displayName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Connection Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={connectionForm.name}
+                    onChange={(e) => setConnectionForm(prev => ({
+                      ...prev,
+                      name: e.target.value
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder={exchangeConfigs[connectionForm.type].displayName}
+                    disabled={isConnecting}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    API Key *
+                  </label>
+                  <input
+                    type="password"
+                    value={connectionForm.apiKey}
+                    onChange={(e) => setConnectionForm(prev => ({
+                      ...prev,
+                      apiKey: e.target.value
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your API key"
+                    required
+                    disabled={isConnecting}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    API Secret *
+                  </label>
+                  <input
+                    type="password"
+                    value={connectionForm.apiSecret}
+                    onChange={(e) => setConnectionForm(prev => ({
+                      ...prev,
+                      apiSecret: e.target.value
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your API secret"
+                    required
+                    disabled={isConnecting}
+                  />
+                </div>
+
+                {exchangeConfigs[connectionForm.type].testnetSupport && (
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="testnet"
+                      checked={connectionForm.testnet}
+                      onChange={(e) => setConnectionForm(prev => ({
+                        ...prev,
+                        testnet: e.target.checked
+                      }))}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      disabled={isConnecting}
+                    />
+                    <label htmlFor="testnet" className="ml-2 text-sm text-gray-700">
+                      Use Testnet (for testing)
+                    </label>
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-3 pt-4 border-t">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowAddModal(false)}
+                    disabled={isConnecting}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isConnecting || !connectionForm.apiKey || !connectionForm.apiSecret}
+                  >
+                    {isConnecting ? 'Connecting...' : 'Connect Exchange'}
+                  </Button>
+                </div>
+              </form>
             </CardContent>
           </Card>
         </div>

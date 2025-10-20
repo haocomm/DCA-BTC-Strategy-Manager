@@ -22,7 +22,7 @@ import exchangeRoutes from './routes/exchanges-simple';
 import dashboardRoutes from './routes/dashboard';
 // import executionRoutes from './routes/executions';
 // import notificationRoutes from './routes/notifications';
-// import externalRoutes from './routes/external';
+import webhookRoutes from './routes/webhooks';
 // import exportRoutes from './routes/export';
 
 // Load environment variables
@@ -82,11 +82,14 @@ async function startServer() {
     app.use('/api/dashboard', authMiddleware, dashboardRoutes);
     // app.use('/api/executions', authMiddleware, executionRoutes);
     // app.use('/api/notifications', authMiddleware, notificationRoutes);
-    // app.use('/api/external', externalRoutes); // No auth for webhooks
+    app.use('/api/webhooks', webhookRoutes); // No auth for webhooks
     // app.use('/api/export', authMiddleware, exportRoutes);
 
     // Setup WebSocket server
     setupWebSocket(wss);
+
+    // Initialize execution service with WebSocket server
+    // TODO: Fix executionService constructor before calling initialize
     logger.info('WebSocket server enabled on same port as HTTP server');
 
     // Setup cron jobs (temporarily disabled)

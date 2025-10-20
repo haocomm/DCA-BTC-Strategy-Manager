@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Plus, Trash2, Play } from 'lucide-react'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import toast from 'react-hot-toast'
@@ -57,31 +57,41 @@ export default function NewStrategyPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, startActive: boolean = true) => {
     e.preventDefault()
+
+    // Validate form
+    if (!formData.name || !formData.exchangeId || !formData.pair || !formData.amount) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      // Validate form
-      if (!formData.name || !formData.exchangeId || !formData.pair || !formData.amount) {
-        toast.error('Please fill in all required fields')
-        return
-      }
-
       const strategyData = {
-        ...formData,
+        name: formData.name,
+        description: formData.description,
+        exchangeId: formData.exchangeId,
+        pair: formData.pair,
+        amount: formData.amount,
+        amountType: formData.amountType.toUpperCase() as 'FIXED' | 'PERCENTAGE',
+        frequency: formData.frequency.toUpperCase() as 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY',
         startDate: new Date(formData.startDate),
         endDate: formData.endDate ? new Date(formData.endDate) : null,
-        conditions: conditions.filter(c => c.isActive),
+        conditions: conditions.filter(c => c.isActive).map(({ id, ...condition }) => condition),
+        isActive: startActive,
       }
 
       const response = await api.post('/strategies', strategyData)
       if (response.success) {
-        toast.success('Strategy created successfully!')
+        toast.success(`Strategy created successfully${startActive ? ' and started' : ''}!`)
         router.push('/strategies')
+      } else {
+        toast.error(response.error || 'Failed to create strategy')
       }
-    } catch (error) {
-      toast.error('Failed to create strategy')
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Failed to create strategy')
     } finally {
       setIsLoading(false)
     }
@@ -375,15 +385,29 @@ export default function NewStrategyPage() {
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end gap-4">
-          <Link href="/strategies">
-            <Button variant="outline" type="button">
+        <div className="flex flex-col sm:flex-row justify-end gap-4">
+          <Link href="/strategies" className="w-full sm:w-auto">
+            <Button variant="outline" type="button" className="w-full sm:w-auto">
               Cancel
             </Button>
           </Link>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="button"
+            onClick={(e) => handleSubmit(e, false)}
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
             <Save className="h-4 w-4 mr-2" />
-            {isLoading ? 'Creating...' : 'Create Strategy'}
+            {isLoading ? 'Creating...' : 'Create Draft'}
+          </Button>
+          <Button
+            type="button"
+            onClick={(e) => handleSubmit(e, true)}
+            disabled={isLoading}
+            className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+          >
+            <Play className="h-4 w-4 mr-2" />
+            {isLoading ? 'Creating...' : 'Create & Start'}
           </Button>
         </div>
       </form>
