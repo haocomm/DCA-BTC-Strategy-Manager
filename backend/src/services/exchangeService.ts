@@ -1,6 +1,7 @@
 import axios from 'axios';
 import crypto from 'crypto';
 import { logger } from '../utils/logger';
+import { ExecutionStatus } from '../lib/types';
 
 // Define the types inline to avoid workspace dependency issues
 export interface Exchange {
@@ -14,13 +15,6 @@ export interface Exchange {
   lastSyncAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-}
-
-export enum ExecutionStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
 }
 
 export interface Execution {
@@ -467,4 +461,4 @@ export class ExchangeFactory {
   }
 }
 
-export { Exchange, Execution, ExecutionStatus };
+export { Exchange, Execution };
