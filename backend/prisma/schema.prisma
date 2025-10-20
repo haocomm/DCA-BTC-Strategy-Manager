@@ -12,10 +12,16 @@ model User {
   id          String   @id @default(cuid())
   email       String   @unique
   name        String
+  password    String?
   avatar      String?
   isActive    Boolean  @default(true)
+  lastLoginAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Relations
+  exchanges   Exchange[]
+  strategies  Strategy[]
 }
 
 model Exchange {
@@ -31,6 +37,7 @@ model Exchange {
   updatedAt   DateTime @updatedAt
 
   // Relations
+  user        User      @relation(fields: [userId], references: [id])
   strategies  Strategy[]
 
   @@map("exchanges")
@@ -53,6 +60,7 @@ model Strategy {
   updatedAt   DateTime @updatedAt
 
   // Relations
+  user        User     @relation(fields: [userId], references: [id])
   exchange    Exchange @relation(fields: [exchangeId], references: [id])
   executions  Execution[]
 

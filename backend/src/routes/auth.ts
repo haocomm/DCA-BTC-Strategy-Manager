@@ -42,7 +42,7 @@ router.post('/register', asyncHandler(async (req, res) => {
     data: {
       email,
       name,
-      // password field would need to be added to Prisma schema
+      password: hashedPassword,
     },
     select: {
       id: true,
@@ -87,11 +87,15 @@ router.post('/login', asyncHandler(async (req, res) => {
     throw createError('Account is deactivated', 401, 'ACCOUNT_DEACTIVATED');
   }
 
-  // This is a placeholder - you'd need to add password field to Prisma schema
-  // const isPasswordValid = await bcrypt.compare(password, user.password);
-  // if (!isPasswordValid) {
-  //   throw createError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
-  // }
+  // Validate password
+  if (!user.password) {
+    throw createError('Please set a password for your account', 401, 'NO_PASSWORD');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw createError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
+  }
 
   // Update last login
   await prisma.user.update({
