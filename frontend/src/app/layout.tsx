@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   description: 'Manage your Dollar-Cost Averaging Bitcoin strategies with automated execution and real-time monitoring',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: {

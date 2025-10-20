@@ -5,22 +5,22 @@ import { Plus, Play, Pause, Settings } from 'lucide-react'
 
 export function QuickActions() {
   return (
-    <div className="flex flex-wrap gap-4">
-      <Button className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+      <Button className="flex items-center justify-center gap-2 w-full sm:w-auto">
         <Plus className="h-4 w-4" />
-        New Strategy
+        <span>New Strategy</span>
       </Button>
-      <Button variant="outline" className="flex items-center gap-2">
+      <Button variant="outline" className="flex items-center justify-center gap-2 w-full sm:w-auto">
         <Play className="h-4 w-4" />
-        Start All
+        <span>Start All</span>
       </Button>
-      <Button variant="outline" className="flex items-center gap-2">
+      <Button variant="outline" className="flex items-center justify-center gap-2 w-full sm:w-auto">
         <Pause className="h-4 w-4" />
-        Pause All
+        <span>Pause All</span>
       </Button>
-      <Button variant="outline" className="flex items-center gap-2">
+      <Button variant="outline" className="flex items-center justify-center gap-2 w-full sm:w-auto">
         <Settings className="h-4 w-4" />
-        Quick Settings
+        <span>Quick Settings</span>
       </Button>
     </div>
   )

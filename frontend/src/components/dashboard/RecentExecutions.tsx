@@ -51,31 +51,33 @@ export function RecentExecutions() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Recent Executions</CardTitle>
-        <CardDescription>
+      <CardHeader className="px-4 sm:px-6 pt-4 sm:pt-6">
+        <CardTitle className="text-lg sm:text-xl">Recent Executions</CardTitle>
+        <CardDescription className="text-sm">
           Latest automatic and manual strategy executions
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <div className="space-y-3 sm:space-y-4">
           {executions.map((execution) => (
             <div
               key={execution.id}
-              className="flex items-center justify-between p-3 border rounded-lg"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-2 sm:gap-0"
             >
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm">{execution.strategyName}</span>
-                  <Badge className={getStatusColor(execution.status)}>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1 sm:mb-2">
+                  <span className="font-medium text-sm sm:text-base truncate">{execution.strategyName}</span>
+                  <Badge className={`w-fit ${getStatusColor(execution.status)}`}>
                     {execution.status}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-xs sm:text-sm text-gray-600 mb-1">
                   {execution.status === 'completed' ? (
-                    <>
-                      Bought {formatCrypto(execution.quantity, 'BTC')} at {formatCurrency(execution.price)}
-                    </>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                      <span>Bought {formatCrypto(execution.quantity, 'BTC')}</span>
+                      <span className="text-gray-400 hidden sm:inline">•</span>
+                      <span>at {formatCurrency(execution.price)}</span>
+                    </div>
                   ) : (
                     <span className="text-red-600">Execution failed</span>
                   )}
@@ -84,8 +86,8 @@ export function RecentExecutions() {
                   {getRelativeTime(execution.timestamp)}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="font-medium">
+              <div className="text-right sm:text-left sm:ml-4">
+                <div className="font-medium text-sm sm:text-base">
                   {execution.status === 'completed' ? formatCurrency(execution.amount) : '-'}
                 </div>
                 <div className="text-xs text-gray-500">
