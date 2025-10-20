@@ -77,9 +77,9 @@ async function startServer() {
 
     // API routes (with auth middleware for protected routes)
     app.use('/api/auth', authRoutes);
-    app.use('/api/strategies', strategyRoutes); // Temporarily without auth for demo
-    app.use('/api/exchanges', exchangeRoutes); // Temporarily without auth for demo
-    app.use('/api/dashboard', dashboardRoutes); // Dashboard statistics
+    app.use('/api/strategies', authMiddleware, strategyRoutes);
+    app.use('/api/exchanges', authMiddleware, exchangeRoutes);
+    app.use('/api/dashboard', authMiddleware, dashboardRoutes);
     // app.use('/api/executions', authMiddleware, executionRoutes);
     // app.use('/api/notifications', authMiddleware, notificationRoutes);
     // app.use('/api/external', externalRoutes); // No auth for webhooks

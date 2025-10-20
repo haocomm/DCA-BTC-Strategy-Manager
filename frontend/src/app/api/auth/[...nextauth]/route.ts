@@ -62,6 +62,14 @@ const handler = NextAuth({
       return session
     },
   },
+  events: {
+    async signOut({ session }) {
+      // Clear token from localStorage on sign out
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token')
+      }
+    },
+  },
 })
 
 export { handler as GET, handler as POST }

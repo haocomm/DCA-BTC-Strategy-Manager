@@ -28,9 +28,10 @@ export default function LoginPage() {
 
       if (result?.ok) {
         toast.success('Login successful!')
-        // Get session to verify authentication
+        // Get session to verify authentication and store token
         const session = await getSession()
-        if (session) {
+        if (session && session.accessToken) {
+          localStorage.setItem('token', session.accessToken)
           router.push('/dashboard')
         }
       } else {
