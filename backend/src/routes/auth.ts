@@ -1,5 +1,5 @@
 
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { asyncHandler, createError } from '../middleware/errorHandler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
@@ -22,7 +22,7 @@ const loginSchema = z.object({
 });
 
 // Register new user
-router.post('/register', asyncHandler(async (req, res) => {
+router.post('/register', asyncHandler(async (req: Request, res: Response) => {
   const { email, password, name } = registerSchema.parse(req.body);
 
   // Check if user already exists
@@ -55,7 +55,7 @@ router.post('/register', asyncHandler(async (req, res) => {
   // Create JWT token
   const token = jwt.sign(
     { userId: user.id },
-    process.env.JWT_SECRET!,
+    process.env.JWT_SECRET as string,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 
@@ -71,7 +71,7 @@ router.post('/register', asyncHandler(async (req, res) => {
 }));
 
 // Login user
-router.post('/login', asyncHandler(async (req, res) => {
+router.post('/login', asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = loginSchema.parse(req.body);
 
   // Find user
@@ -106,7 +106,7 @@ router.post('/login', asyncHandler(async (req, res) => {
   // Create JWT token
   const token = jwt.sign(
     { userId: user.id },
-    process.env.JWT_SECRET!,
+    process.env.JWT_SECRET as string,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 

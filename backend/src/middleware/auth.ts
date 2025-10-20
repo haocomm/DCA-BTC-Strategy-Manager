@@ -65,7 +65,7 @@ export const authMiddleware = async (
     };
 
     next();
-  } catch (error) {
+  } catch (error: any) {
     logger.warn('Authentication failed:', error);
 
     if (error.name === 'JsonWebTokenError') {
