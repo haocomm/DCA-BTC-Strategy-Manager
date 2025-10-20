@@ -85,34 +85,35 @@ export default function StrategiesPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Strategies</h1>
-          <p className="text-gray-600 mt-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="px-1 sm:px-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Strategies</h1>
+          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
             Manage your automated DCA trading strategies
           </p>
         </div>
         <Link href="/strategies/new">
-          <Button className="flex items-center gap-2">
+          <Button className="flex items-center gap-2 w-full sm:w-auto justify-center">
             <Plus className="h-4 w-4" />
-            New Strategy
+            <span>New Strategy</span>
           </Button>
         </Link>
       </div>
 
       {/* Filter Controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-500" />
           <span className="text-sm font-medium">Filter:</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setFilter('all')}
+            className="flex-shrink-0"
           >
             All ({strategies.length})
           </Button>
@@ -120,6 +121,7 @@ export default function StrategiesPage() {
             variant={filter === 'active' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setFilter('active')}
+            className="flex-shrink-0"
           >
             Active ({strategies.filter(s => s.isActive).length})
           </Button>
@@ -127,6 +129,7 @@ export default function StrategiesPage() {
             variant={filter === 'inactive' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setFilter('inactive')}
+            className="flex-shrink-0"
           >
             Paused ({strategies.filter(s => !s.isActive).length})
           </Button>
@@ -166,70 +169,76 @@ export default function StrategiesPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredStrategies.map((strategy) => (
-            <Card key={strategy.id}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold">{strategy.name}</h3>
-                      <Badge className={getStatusColor(strategy.isActive ? 'active' : 'inactive')}>
-                        {strategy.isActive ? 'Active' : 'Paused'}
-                      </Badge>
-                      <Badge variant="outline">
-                        {strategy.exchange.name}
-                      </Badge>
+            <Card key={strategy.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 mb-3">
+                      <h3 className="text-base sm:text-lg font-semibold truncate pr-2">{strategy.name}</h3>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge className={`w-fit ${getStatusColor(strategy.isActive ? 'active' : 'inactive')}`}>
+                          {strategy.isActive ? 'Active' : 'Paused'}
+                        </Badge>
+                        <Badge variant="outline" className="w-fit">
+                          {strategy.exchange.name}
+                        </Badge>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div>
-                        <span className="text-gray-500">Trading Pair:</span>
-                        <div className="font-medium">{strategy.pair}</div>
+                        <span className="text-gray-500 block">Trading Pair:</span>
+                        <div className="font-medium truncate">{strategy.pair}</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Amount:</span>
+                        <span className="text-gray-500 block">Amount:</span>
                         <div className="font-medium">{formatCurrency(strategy.amount)}</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Frequency:</span>
+                        <span className="text-gray-500 block">Frequency:</span>
                         <div className="font-medium capitalize">{strategy.frequency}</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Success Rate:</span>
+                        <span className="text-gray-500 block">Success Rate:</span>
                         <div className="font-medium">{strategy.successRate}%</div>
                       </div>
                     </div>
 
-                    <div className="mt-3 text-sm text-gray-600">
-                      <span>{strategy.totalExecutions} executions</span>
-                      {strategy.isActive && strategy.nextExecution && (
-                        <span className="ml-4">
-                          Next execution: {getRelativeTime(strategy.nextExecution)}
-                        </span>
-                      )}
+                    <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-600 space-y-1">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <span>{strategy.totalExecutions} executions</span>
+                        {strategy.isActive && strategy.nextExecution && (
+                          <>
+                            <span className="text-gray-400">•</span>
+                            <span className="hidden sm:inline">Next: {getRelativeTime(strategy.nextExecution)}</span>
+                            <span className="sm:hidden">Next: {getRelativeTime(strategy.nextExecution, true)}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 ml-6">
+                  <div className="flex items-center gap-2 sm:gap-3 lg:ml-4 lg:flex-shrink-0">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => toggleStrategy(strategy.id, strategy.isActive)}
-                      className={strategy.isActive ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'}
+                      className={`flex-shrink-0 px-3 ${strategy.isActive ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'}`}
                     >
                       {strategy.isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                     </Button>
 
                     <Link href={`/strategies/${strategy.id}`}>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="flex-shrink-0 px-3">
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="flex-shrink-0 px-3">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>

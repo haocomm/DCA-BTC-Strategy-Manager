@@ -37,7 +37,7 @@ export function formatDate(date: Date | string, format = 'medium'): string {
   return new Intl.DateTimeFormat('en-US', options).format(dateObj)
 }
 
-export function getRelativeTime(date: Date | string): string {
+export function getRelativeTime(date: Date | string, short: boolean = false): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
   const now = new Date()
   const diffMs = now.getTime() - dateObj.getTime()
@@ -45,10 +45,10 @@ export function getRelativeTime(date: Date | string): string {
   const diffHours = Math.floor(diffMins / 60)
   const diffDays = Math.floor(diffHours / 24)
 
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
-  return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+  if (diffMins < 1) return short ? 'Now' : 'Just now'
+  if (diffMins < 60) return `${diffMins}${short ? 'm' : ` minute${diffMins > 1 ? 's' : ''}`} ago`
+  if (diffHours < 24) return `${diffHours}${short ? 'h' : ` hour${diffHours > 1 ? 's' : ''}`} ago`
+  return `${diffDays}${short ? 'd' : ` day${diffDays > 1 ? 's' : ''}`} ago`
 }
 
 export function getStatusColor(status: string): string {

@@ -104,45 +104,45 @@ export default function ExchangesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Exchanges</h1>
-          <p className="text-gray-600 mt-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="px-1 sm:px-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Exchanges</h1>
+          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
             Manage your cryptocurrency exchange connections
           </p>
         </div>
-        <Button onClick={() => setShowAddModal(true)}>
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto justify-center">
           <Plus className="h-4 w-4 mr-2" />
           Add Exchange
         </Button>
       </div>
 
       {/* Exchange Options */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {Object.entries(exchangeConfigs).map(([type, config]) => {
           const connectedExchange = exchanges.find(e => e.type === type)
           const isConnected = !!connectedExchange
 
           return (
-            <Card key={type} className={isConnected ? 'border-green-200' : ''}>
-              <CardHeader>
+            <Card key={type} className={`${isConnected ? 'border-green-200' : ''} hover:shadow-md transition-shadow`}>
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full ${config.color} flex items-center justify-center`}>
-                      <span className="text-white font-bold">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${config.color} flex items-center justify-center flex-shrink-0`}>
+                      <span className="text-white font-bold text-sm sm:text-base">
                         {config.name.charAt(0)}
                       </span>
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">{config.displayName}</CardTitle>
+                    <div className="min-w-0">
+                      <CardTitle className="text-base sm:text-lg truncate">{config.displayName}</CardTitle>
                       {isConnected && (
-                        <div className="flex items-center gap-1 text-sm">
-                          <CheckCircle className="h-3 w-3 text-green-500" />
+                        <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
+                          <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                           <span className="text-green-600">Connected</span>
                           {connectedExchange.testnet && (
-                            <Badge variant="outline" className="text-xs ml-1">
+                            <Badge variant="outline" className="text-xs ml-1 flex-shrink-0">
                               Testnet
                             </Badge>
                           )}
@@ -152,11 +152,11 @@ export default function ExchangesPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="pt-0">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-2">Features:</p>
-                    <div className="flex flex-wrap gap-1">
+                    <p className="text-xs sm:text-sm text-gray-600 mb-2">Features:</p>
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {config.features.map((feature) => (
                         <Badge key={feature} variant="outline" className="text-xs">
                           {feature}
@@ -166,26 +166,27 @@ export default function ExchangesPage() {
                   </div>
 
                   {isConnected ? (
-                    <div className="space-y-2">
-                      <div className="text-sm">
-                        <span className="text-gray-500">Name:</span>
-                        <div className="font-medium">{connectedExchange.name}</div>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="text-xs sm:text-sm">
+                        <span className="text-gray-500 block">Name:</span>
+                        <div className="font-medium truncate">{connectedExchange.name}</div>
                       </div>
 
                       {connectedExchange.lastSyncAt && (
-                        <div className="text-sm">
-                          <span className="text-gray-500">Last sync:</span>
+                        <div className="text-xs sm:text-sm">
+                          <span className="text-gray-500 block">Last sync:</span>
                           <div className="font-medium">
                             {new Date(connectedExchange.lastSyncAt).toLocaleString()}
                           </div>
                         </div>
                       )}
 
-                      <div className="flex gap-2 pt-2">
+                      <div className="flex flex-wrap gap-2 pt-2">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => testConnection(connectedExchange.id)}
+                          className="flex-shrink-0"
                         >
                           <TestTube className="h-3 w-3 mr-1" />
                           Test
@@ -194,6 +195,7 @@ export default function ExchangesPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => toggleExchange(connectedExchange.id, connectedExchange.isActive)}
+                          className="flex-shrink-0"
                         >
                           <Settings className="h-3 w-3 mr-1" />
                           {connectedExchange.isActive ? 'Disable' : 'Enable'}
@@ -202,15 +204,15 @@ export default function ExchangesPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => deleteExchange(connectedExchange.id)}
-                          className="text-red-600"
+                          className="text-red-600 flex-shrink-0"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      <p className="text-sm text-gray-600">
+                    <div className="space-y-3 sm:space-y-4">
+                      <p className="text-xs sm:text-sm text-gray-600">
                         Connect your {config.displayName} account to start trading
                       </p>
                       <Button

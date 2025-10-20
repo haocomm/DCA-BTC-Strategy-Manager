@@ -34,16 +34,16 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">
+      <div className="px-1 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
+        <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
           Manage your account and application preferences
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Profile Settings */}
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -151,48 +151,48 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Email Notifications</div>
-                  <div className="text-sm text-gray-600">Receive updates via email</div>
+                <div className="flex-1 min-w-0 mr-3">
+                  <div className="font-medium text-sm sm:text-base">Email Notifications</div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Receive updates via email</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.emailNotifications}
                   onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })}
-                  className="rounded"
+                  className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">LINE Notifications</div>
-                  <div className="text-sm text-gray-600">Get alerts on LINE</div>
+                <div className="flex-1 min-w-0 mr-3">
+                  <div className="font-medium text-sm sm:text-base">LINE Notifications</div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Get alerts on LINE</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.lineNotifications}
                   onChange={(e) => setSettings({ ...settings, lineNotifications: e.target.checked })}
-                  className="rounded"
+                  className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Telegram Notifications</div>
-                  <div className="text-sm text-gray-600">Get alerts on Telegram</div>
+                <div className="flex-1 min-w-0 mr-3">
+                  <div className="font-medium text-sm sm:text-base">Telegram Notifications</div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Get alerts on Telegram</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.telegramNotifications}
                   onChange={(e) => setSettings({ ...settings, telegramNotifications: e.target.checked })}
-                  className="rounded"
+                  className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
             </div>
