@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/database';
 import { createError } from './errorHandler';
-import { logger } from '@dca-btc/shared';
+import { logger } from '../utils/logger';
 
 export interface AuthenticatedRequest extends Request {
   user?: {

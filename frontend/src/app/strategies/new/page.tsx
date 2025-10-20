@@ -13,6 +13,7 @@ interface Exchange {
   id: string
   name: string
   type: string
+  isActive: boolean
 }
 
 interface StrategyCondition {

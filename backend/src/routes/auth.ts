@@ -1,10 +1,11 @@
+
 import { Router } from 'express';
 import { asyncHandler, createError } from '../middleware/errorHandler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '../utils/database';
-import { logger } from '@dca-btc/shared';
+import { logger } from '../utils/logger';
 
 const router = Router();
 

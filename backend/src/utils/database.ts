@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { logger } from '@dca-btc/shared';
+import { logger } from './logger';
 
 declare global {
   var __prisma: PrismaClient | undefined;

@@ -8,21 +8,22 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import dotenv from 'dotenv';
 
-import { logger } from '@dca-btc/shared';
+import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
-import { setupWebSocket } from './utils/websocket';
+// import { setupWebSocket } from './utils/websocket';
 import { setupDatabase } from './utils/database';
-import { setupCronJobs } from './utils/cron';
+// import { setupCronJobs } from './utils/cron';
 
-// Routes
+// Routes (temporarily simplified for basic functionality)
 import authRoutes from './routes/auth';
-import strategyRoutes from './routes/strategies';
-import exchangeRoutes from './routes/exchanges';
-import executionRoutes from './routes/executions';
-import notificationRoutes from './routes/notifications';
-import externalRoutes from './routes/external';
-import exportRoutes from './routes/export';
+import strategyRoutes from './routes/strategies-simple';
+import exchangeRoutes from './routes/exchanges-simple';
+import dashboardRoutes from './routes/dashboard';
+// import executionRoutes from './routes/executions';
+// import notificationRoutes from './routes/notifications';
+// import externalRoutes from './routes/external';
+// import exportRoutes from './routes/export';
 
 // Load environment variables
 dotenv.config();
@@ -31,9 +32,9 @@ const app = express();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3003;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3001';
 
 async function startServer() {
   try {
@@ -74,22 +75,23 @@ async function startServer() {
       });
     });
 
-    // API routes
+    // API routes (with auth middleware for protected routes)
     app.use('/api/auth', authRoutes);
-    app.use('/api/strategies', authMiddleware, strategyRoutes);
-    app.use('/api/exchanges', authMiddleware, exchangeRoutes);
-    app.use('/api/executions', authMiddleware, executionRoutes);
-    app.use('/api/notifications', authMiddleware, notificationRoutes);
-    app.use('/api/external', externalRoutes); // No auth for webhooks
-    app.use('/api/export', authMiddleware, exportRoutes);
+    app.use('/api/strategies', strategyRoutes); // Temporarily without auth for demo
+    app.use('/api/exchanges', exchangeRoutes); // Temporarily without auth for demo
+    app.use('/api/dashboard', dashboardRoutes); // Dashboard statistics
+    // app.use('/api/executions', authMiddleware, executionRoutes);
+    // app.use('/api/notifications', authMiddleware, notificationRoutes);
+    // app.use('/api/external', externalRoutes); // No auth for webhooks
+    // app.use('/api/export', authMiddleware, exportRoutes);
 
-    // Setup WebSocket
-    setupWebSocket(wss);
-    logger.info('WebSocket server initialized');
+    // Setup WebSocket (temporarily disabled)
+    // setupWebSocket(wss);
+    logger.info('WebSocket server temporarily disabled');
 
-    // Setup cron jobs
-    setupCronJobs();
-    logger.info('Cron jobs initialized');
+    // Setup cron jobs (temporarily disabled)
+    // setupCronJobs();
+    logger.info('Cron jobs temporarily disabled');
 
     // Error handling middleware
     app.use(errorHandler);

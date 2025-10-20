@@ -30,9 +30,6 @@ model Exchange {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  strategies  Strategy[]
-
   @@map("exchanges")
 }
 
@@ -52,17 +49,12 @@ model Strategy {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  exchange    Exchange @relation(fields: [exchangeId], references: [id])
-  executions  Execution[]
-
   @@map("strategies")
 }
 
 model Execution {
   id           String   @id @default(cuid())
   strategyId   String
-  exchangeId   String
   amount       Float
   price        Float
   quantity     Float
@@ -70,9 +62,6 @@ model Execution {
   errorMessage String?
   timestamp    DateTime @default(now())
   createdAt    DateTime @default(now())
-
-  // Relations
-  strategy     Strategy @relation(fields: [strategyId], references: [id])
 
   @@map("executions")
 }

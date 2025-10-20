@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger, AppError } from '@dca-btc/shared';
+import { logger } from '../utils/logger';
 
 export interface CustomError extends Error {
   statusCode?: number;

@@ -1,6 +1,6 @@
 import { toast } from 'react-hot-toast'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003'
 
 class ApiClient {
   private baseURL: string
@@ -71,6 +71,16 @@ class ApiClient {
     })
   }
 
+  async patch<T>(
+    endpoint: string,
+    data?: any
+  ): Promise<{ success: boolean; data?: T; error?: string }> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+
   async delete<T>(endpoint: string): Promise<{ success: boolean; data?: T; error?: string }> {
     return this.request<T>(endpoint, { method: 'DELETE' })
   }
@@ -78,7 +88,6 @@ class ApiClient {
 
 export const apiClient = new ApiClient(API_URL)
 
-// Helper functions with toast notifications
 export const api = {
   get: async <T>(endpoint: string) => {
     try {
@@ -109,6 +118,19 @@ export const api = {
   put: async <T>(endpoint: string, data?: any) => {
     try {
       const result = await apiClient.put<T>(endpoint, data)
+      if (!result.success) {
+        toast.error(result.error || 'Request failed')
+      }
+      return result
+    } catch (error) {
+      toast.error('Network error occurred')
+      throw error
+    }
+  },
+
+  patch: async <T>(endpoint: string, data?: any) => {
+    try {
+      const result = await apiClient.patch<T>(endpoint, data)
       if (!result.success) {
         toast.error(result.error || 'Request failed')
       }

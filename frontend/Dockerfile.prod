@@ -4,10 +4,9 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY ../shared/package*.json ../shared/
 
-# Install dependencies
-RUN npm ci --only=production && cd ../shared && npm ci --only=production
+# Install all dependencies
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -25,10 +24,8 @@ WORKDIR /app
 
 # Copy build artifacts
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/../shared/node_modules ../shared/node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/public ./public
 
 # Switch to non-root user
 USER nodejs

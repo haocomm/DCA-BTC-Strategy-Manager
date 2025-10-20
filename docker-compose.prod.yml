@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -26,7 +24,7 @@ services:
     image: redis:7-alpine
     container_name: dca-redis-prod
     restart: always
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass dca-secure-redis-password-prod-2024
     volumes:
       - redis_data:/data
     networks:

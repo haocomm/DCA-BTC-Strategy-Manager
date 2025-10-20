@@ -26,6 +26,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             style: {
               background: '#363636',
               color: '#fff',
+              zIndex: 40,
             },
             success: {
               duration: 3000,

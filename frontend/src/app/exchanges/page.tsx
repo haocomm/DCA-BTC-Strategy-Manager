@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Plus, CheckCircle, XCircle, Settings, TestTube, Trash2 } from 'lucide-react'
-import { getStatusColor, ExchangeType } from '@dca-btc/shared'
+import { ExchangeType } from '@/lib/types'
 import { api } from '@/lib/api'
 import toast from 'react-hot-toast'
 
