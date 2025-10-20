@@ -11,7 +11,7 @@ import dotenv from 'dotenv';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
-// import { setupWebSocket } from './utils/websocket';
+import { setupWebSocket } from './utils/websocket';
 import { setupDatabase } from './utils/database';
 // import { setupCronJobs } from './utils/cron';
 
@@ -85,9 +85,9 @@ async function startServer() {
     // app.use('/api/external', externalRoutes); // No auth for webhooks
     // app.use('/api/export', authMiddleware, exportRoutes);
 
-    // Setup WebSocket (temporarily disabled)
-    // setupWebSocket(wss);
-    logger.info('WebSocket server temporarily disabled');
+    // Setup WebSocket server
+    setupWebSocket(wss);
+    logger.info('WebSocket server enabled on same port as HTTP server');
 
     // Setup cron jobs (temporarily disabled)
     // setupCronJobs();
