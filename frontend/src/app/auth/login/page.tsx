@@ -1,55 +1,55 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
-import toast from 'react-hot-toast'
+import { useState } from 'react';
+import { signIn, getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-  })
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
         redirect: false,
-      })
+      });
 
       if (result?.ok) {
-        toast.success('Login successful!')
+        toast.success('Login successful!');
         // Get session to verify authentication and store token
-        const session = await getSession()
+        const session = await getSession();
         if (session && session.accessToken) {
-          localStorage.setItem('token', session.accessToken)
-          router.push('/dashboard')
+          localStorage.setItem('token', session.accessToken);
+          router.push('/dashboard');
         }
       } else {
-        toast.error('Invalid email or password')
+        toast.error('Invalid email or password');
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.')
+      toast.error('An error occurred. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -60,7 +60,10 @@ export default function LoginPage() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link href="/auth/register" className="font-medium text-primary hover:text-primary/90">
+            <Link
+              href="/auth/register"
+              className="font-medium text-primary hover:text-primary/90"
+            >
               create a new account
             </Link>
           </p>
@@ -109,13 +112,19 @@ export default function LoginPage() {
                 type="checkbox"
                 className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-primary hover:text-primary/90">
+              <a
+                href="#"
+                className="font-medium text-primary hover:text-primary/90"
+              >
                 Forgot your password?
               </a>
             </div>
@@ -133,5 +142,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }

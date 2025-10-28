@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/Button'
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,16 +9,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
-import { User, LogOut, Settings } from 'lucide-react'
+} from '@/components/ui/DropdownMenu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { User, LogOut, Settings } from 'lucide-react';
 
 export function UserNav() {
   const [user] = useState({
     name: 'John Doe',
     email: 'john@example.com',
     avatar: '/avatars/01.png',
-  })
+  });
 
   return (
     <DropdownMenu>
@@ -27,7 +27,10 @@ export function UserNav() {
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback>
-              {user.name.split(' ').map(n => n[0]).join('')}
+              {user.name
+                .split(' ')
+                .map((n) => n[0])
+                .join('')}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -57,5 +60,5 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

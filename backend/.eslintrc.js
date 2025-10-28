@@ -1,22 +1,18 @@
 module.exports = {
-  root: true,
   env: {
     node: true,
     es2022: true,
   },
   extends: [
     'eslint:recommended',
-    'prettier',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['prettier'],
   rules: {
-    'prettier/prettier': 'error',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-console': 'off',
   },
-  ignorePatterns: ['node_modules/', 'dist/', '.next/', 'coverage/'],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/'],
 };

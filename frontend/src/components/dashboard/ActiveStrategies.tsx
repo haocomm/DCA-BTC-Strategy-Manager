@@ -1,11 +1,17 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { RelativeTime } from '@/components/ui/RelativeTime'
-import { Play, Pause, Edit, MoreHorizontal } from 'lucide-react'
-import { getStatusColor, formatDate } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { RelativeTime } from '@/components/ui/RelativeTime';
+import { Play, Pause, Edit, MoreHorizontal } from 'lucide-react';
+import { getStatusColor, formatDate } from '@/lib/utils';
 
 export function ActiveStrategies() {
   // Mock data - replace with actual API calls
@@ -43,7 +49,7 @@ export function ActiveStrategies() {
       totalExecutions: 128,
       successRate: 95.3,
     },
-  ]
+  ];
 
   return (
     <Card>
@@ -62,8 +68,12 @@ export function ActiveStrategies() {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                  <h3 className="font-medium text-sm sm:text-base truncate">{strategy.name}</h3>
-                  <Badge className={`w-fit ${getStatusColor(strategy.isActive ? 'active' : 'inactive')}`}>
+                  <h3 className="font-medium text-sm sm:text-base truncate">
+                    {strategy.name}
+                  </h3>
+                  <Badge
+                    className={`w-fit ${getStatusColor(strategy.isActive ? 'active' : 'inactive')}`}
+                  >
                     {strategy.isActive ? 'Active' : 'Paused'}
                   </Badge>
                 </div>
@@ -96,7 +106,11 @@ export function ActiveStrategies() {
                   size="sm"
                   className={`px-2 sm:px-3 ${strategy.isActive ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'}`}
                 >
-                  {strategy.isActive ? <Pause className="h-3 w-3 sm:h-4 sm:w-4" /> : <Play className="h-3 w-3 sm:h-4 sm:w-4" />}
+                  {strategy.isActive ? (
+                    <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
+                  ) : (
+                    <Play className="h-3 w-3 sm:h-4 sm:w-4" />
+                  )}
                 </Button>
                 <Button variant="outline" size="sm" className="px-2 sm:px-3">
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -110,5 +124,5 @@ export function ActiveStrategies() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

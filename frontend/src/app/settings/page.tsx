@@ -1,14 +1,20 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Save, Bell, Shield, Palette } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Save, Bell, Shield, Palette } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
-  const [isSaving, setIsSaving] = useState(false)
+  const [isSaving, setIsSaving] = useState(false);
   const [settings, setSettings] = useState({
     email: 'john@example.com',
     name: 'John Doe',
@@ -18,26 +24,28 @@ export default function SettingsPage() {
     emailNotifications: true,
     lineNotifications: false,
     telegramNotifications: false,
-  })
+  });
 
   const handleSave = async () => {
-    setIsSaving(true)
+    setIsSaving(true);
     try {
       // TODO: Implement settings API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success('Settings saved successfully!')
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success('Settings saved successfully!');
     } catch (error) {
-      toast.error('Failed to save settings')
+      toast.error('Failed to save settings');
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="px-1 sm:px-0">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          Settings
+        </h1>
         <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
           Manage your account and application preferences
         </p>
@@ -63,7 +71,9 @@ export default function SettingsPage() {
                   type="text"
                   className="input"
                   value={settings.name}
-                  onChange={(e) => setSettings({ ...settings, name: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, name: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -72,7 +82,9 @@ export default function SettingsPage() {
                   type="email"
                   className="input"
                   value={settings.email}
-                  onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, email: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -83,7 +95,9 @@ export default function SettingsPage() {
                 <select
                   className="input"
                   value={settings.timezone}
-                  onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, timezone: e.target.value })
+                  }
                 >
                   <option value="UTC">UTC</option>
                   <option value="America/New_York">Eastern Time</option>
@@ -97,7 +111,9 @@ export default function SettingsPage() {
                 <select
                   className="input"
                   value={settings.currency}
-                  onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, currency: e.target.value })
+                  }
                 >
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>
@@ -108,9 +124,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="pt-4">
-              <Button variant="outline">
-                Change Password
-              </Button>
+              <Button variant="outline">Change Password</Button>
             </div>
           </CardContent>
         </Card>
@@ -155,13 +169,22 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0 mr-3">
-                  <div className="font-medium text-sm sm:text-base">Email Notifications</div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Receive updates via email</div>
+                  <div className="font-medium text-sm sm:text-base">
+                    Email Notifications
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                    Receive updates via email
+                  </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.emailNotifications}
-                  onChange={(e) => setSettings({ ...settings, emailNotifications: e.target.checked })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      emailNotifications: e.target.checked,
+                    })
+                  }
                   className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
@@ -170,13 +193,22 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0 mr-3">
-                  <div className="font-medium text-sm sm:text-base">LINE Notifications</div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Get alerts on LINE</div>
+                  <div className="font-medium text-sm sm:text-base">
+                    LINE Notifications
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                    Get alerts on LINE
+                  </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.lineNotifications}
-                  onChange={(e) => setSettings({ ...settings, lineNotifications: e.target.checked })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      lineNotifications: e.target.checked,
+                    })
+                  }
                   className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
@@ -185,13 +217,22 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0 mr-3">
-                  <div className="font-medium text-sm sm:text-base">Telegram Notifications</div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Get alerts on Telegram</div>
+                  <div className="font-medium text-sm sm:text-base">
+                    Telegram Notifications
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                    Get alerts on Telegram
+                  </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.telegramNotifications}
-                  onChange={(e) => setSettings({ ...settings, telegramNotifications: e.target.checked })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      telegramNotifications: e.target.checked,
+                    })
+                  }
                   className="rounded h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
                 />
               </div>
@@ -218,7 +259,9 @@ export default function SettingsPage() {
               <select
                 className="input"
                 value={settings.language}
-                onChange={(e) => setSettings({ ...settings, language: e.target.value })}
+                onChange={(e) =>
+                  setSettings({ ...settings, language: e.target.value })
+                }
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -248,5 +291,5 @@ export default function SettingsPage() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

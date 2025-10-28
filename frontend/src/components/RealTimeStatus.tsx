@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { useWebSocket } from '@/hooks/useWebSocket'
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface RealTimeStatusProps {
-  className?: string
+  className?: string;
 }
 
 export function RealTimeStatus({ className = '' }: RealTimeStatusProps) {
-  const { isConnected, lastMessage, send } = useWebSocket()
+  const { isConnected, lastMessage, send } = useWebSocket();
 
   const handlePing = () => {
-    send('ping', {})
-  }
+    send('ping', {});
+  };
 
   const handleSubscribe = () => {
     send('subscribe', {
-      subscriptions: ['strategy_updates', 'execution_updates', 'price_updates']
-    })
-  }
+      subscriptions: ['strategy_updates', 'execution_updates', 'price_updates'],
+    });
+  };
 
   return (
     <div className={`flex items-center space-x-4 ${className}`}>
@@ -54,9 +54,10 @@ export function RealTimeStatus({ className = '' }: RealTimeStatusProps) {
       {/* Last Message Display */}
       {lastMessage && process.env.NODE_ENV === 'development' && (
         <div className="text-xs text-gray-500 max-w-xs truncate">
-          Last: {lastMessage.type} - {new Date(lastMessage.timestamp).toLocaleTimeString()}
+          Last: {lastMessage.type} -{' '}
+          {new Date(lastMessage.timestamp).toLocaleTimeString()}
         </div>
       )}
     </div>
-  )
+  );
 }

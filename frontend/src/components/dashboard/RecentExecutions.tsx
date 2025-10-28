@@ -1,9 +1,15 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { RelativeTime } from '@/components/ui/RelativeTime'
-import { formatCurrency, formatCrypto, getStatusColor } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { RelativeTime } from '@/components/ui/RelativeTime';
+import { formatCurrency, formatCrypto, getStatusColor } from '@/lib/utils';
 
 export function RecentExecutions() {
   // Mock data - replace with actual API calls
@@ -48,7 +54,7 @@ export function RecentExecutions() {
       status: 'completed',
       timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000), // 1 day ago
     },
-  ]
+  ];
 
   return (
     <Card>
@@ -67,15 +73,21 @@ export function RecentExecutions() {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1 sm:mb-2">
-                  <span className="font-medium text-sm sm:text-base truncate">{execution.strategyName}</span>
-                  <Badge className={`w-fit ${getStatusColor(execution.status)}`}>
+                  <span className="font-medium text-sm sm:text-base truncate">
+                    {execution.strategyName}
+                  </span>
+                  <Badge
+                    className={`w-fit ${getStatusColor(execution.status)}`}
+                  >
                     {execution.status}
                   </Badge>
                 </div>
                 <div className="text-xs sm:text-sm text-gray-600 mb-1">
                   {execution.status === 'completed' ? (
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                      <span>Bought {formatCrypto(execution.quantity, 'BTC')}</span>
+                      <span>
+                        Bought {formatCrypto(execution.quantity, 'BTC')}
+                      </span>
                       <span className="text-gray-400 hidden sm:inline">•</span>
                       <span>at {formatCurrency(execution.price)}</span>
                     </div>
@@ -87,16 +99,16 @@ export function RecentExecutions() {
               </div>
               <div className="text-right sm:text-left sm:ml-4">
                 <div className="font-medium text-sm sm:text-base">
-                  {execution.status === 'completed' ? formatCurrency(execution.amount) : '-'}
+                  {execution.status === 'completed'
+                    ? formatCurrency(execution.amount)
+                    : '-'}
                 </div>
-                <div className="text-xs text-gray-500">
-                  {execution.pair}
-                </div>
+                <div className="text-xs text-gray-500">{execution.pair}</div>
               </div>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

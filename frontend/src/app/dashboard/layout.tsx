@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { DashboardNav } from '@/components/dashboard/DashboardNav'
-import { UserNav } from '@/components/dashboard/UserNav'
-import { Menu, X } from 'lucide-react'
+import { useState } from 'react';
+import { DashboardNav } from '@/components/dashboard/DashboardNav';
+import { UserNav } from '@/components/dashboard/UserNav';
+import { Menu, X } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,10 +43,12 @@ export default function DashboardLayout({
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`
+        <aside
+          className={`
           fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-sm transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}>
+        `}
+        >
           <div className="flex flex-col h-full pt-16 lg:pt-0">
             <div className="flex-1 p-4 overflow-y-auto">
               <DashboardNav />
@@ -63,10 +65,8 @@ export default function DashboardLayout({
         )}
 
         {/* Main content */}
-        <main className="flex-1 min-w-0 p-4 sm:p-6">
-          {children}
-        </main>
+        <main className="flex-1 min-w-0 p-4 sm:p-6">{children}</main>
       </div>
     </div>
-  )
+  );
 }

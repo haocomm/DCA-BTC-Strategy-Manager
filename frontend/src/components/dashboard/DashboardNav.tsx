@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
   TrendingUp,
   Wallet,
   History,
   Settings,
-  Bell
-} from 'lucide-react'
+  Bell,
+} from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -19,15 +19,15 @@ const navigation = [
   { name: 'Executions', href: '/logs', icon: History },
   { name: 'Notifications', href: '/notifications', icon: Bell },
   { name: 'Settings', href: '/settings', icon: Settings },
-]
+];
 
 export function DashboardNav() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <nav className="space-y-1">
       {navigation.map((item) => {
-        const isActive = pathname === item.href
+        const isActive = pathname === item.href;
         return (
           <Link
             key={item.name}
@@ -42,13 +42,15 @@ export function DashboardNav() {
             <item.icon
               className={cn(
                 'mr-3 h-5 w-5 flex-shrink-0',
-                isActive ? 'text-primary-foreground' : 'text-gray-400 group-hover:text-gray-500'
+                isActive
+                  ? 'text-primary-foreground'
+                  : 'text-gray-400 group-hover:text-gray-500'
               )}
             />
             {item.name}
           </Link>
-        )
+        );
       })}
     </nav>
-  )
+  );
 }

@@ -1,34 +1,40 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { ArrowLeft, Save, Plus, Trash2, Play } from 'lucide-react'
-import Link from 'next/link'
-import { api } from '@/lib/api'
-import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/Button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/Card';
+import { ArrowLeft, Save, Plus, Trash2, Play } from 'lucide-react';
+import Link from 'next/link';
+import { api } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 interface Exchange {
-  id: string
-  name: string
-  type: string
-  isActive: boolean
+  id: string;
+  name: string;
+  type: string;
+  isActive: boolean;
 }
 
 interface StrategyCondition {
-  id: string
-  type: string
-  operator: string
-  value: number
-  isActive: boolean
+  id: string;
+  type: string;
+  operator: string;
+  value: number;
+  isActive: boolean;
 }
 
 export default function NewStrategyPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [exchanges, setExchanges] = useState<Exchange[]>([])
-  const [conditions, setConditions] = useState<StrategyCondition[]>([])
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [exchanges, setExchanges] = useState<Exchange[]>([]);
+  const [conditions, setConditions] = useState<StrategyCondition[]>([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -40,33 +46,41 @@ export default function NewStrategyPage() {
     frequency: 'daily' as 'hourly' | 'daily' | 'weekly' | 'monthly',
     startDate: new Date().toISOString().split('T')[0],
     endDate: '',
-  })
+  });
 
   useEffect(() => {
-    loadExchanges()
-  }, [])
+    loadExchanges();
+  }, []);
 
   const loadExchanges = async () => {
     try {
-      const response = await api.get<Exchange[]>('/exchanges')
+      const response = await api.get<Exchange[]>('/exchanges');
       if (response.success && response.data) {
-        setExchanges(response.data.filter(e => e.isActive))
+        setExchanges(response.data.filter((e) => e.isActive));
       }
     } catch (error) {
-      toast.error('Failed to load exchanges')
+      toast.error('Failed to load exchanges');
     }
-  }
+  };
 
-  const handleSubmit = async (e: React.FormEvent, startActive: boolean = true) => {
-    e.preventDefault()
+  const handleSubmit = async (
+    e: React.FormEvent,
+    startActive: boolean = true
+  ) => {
+    e.preventDefault();
 
     // Validate form
-    if (!formData.name || !formData.exchangeId || !formData.pair || !formData.amount) {
-      toast.error('Please fill in all required fields')
-      return
+    if (
+      !formData.name ||
+      !formData.exchangeId ||
+      !formData.pair ||
+      !formData.amount
+    ) {
+      toast.error('Please fill in all required fields');
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const strategyData = {
@@ -76,26 +90,34 @@ export default function NewStrategyPage() {
         pair: formData.pair,
         amount: formData.amount,
         amountType: formData.amountType.toUpperCase() as 'FIXED' | 'PERCENTAGE',
-        frequency: formData.frequency.toUpperCase() as 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY',
+        frequency: formData.frequency.toUpperCase() as
+          | 'HOURLY'
+          | 'DAILY'
+          | 'WEEKLY'
+          | 'MONTHLY',
         startDate: new Date(formData.startDate),
         endDate: formData.endDate ? new Date(formData.endDate) : null,
-        conditions: conditions.filter(c => c.isActive).map(({ id, ...condition }) => condition),
+        conditions: conditions
+          .filter((c) => c.isActive)
+          .map(({ id, ...condition }) => condition),
         isActive: startActive,
-      }
+      };
 
-      const response = await api.post('/strategies', strategyData)
+      const response = await api.post('/strategies', strategyData);
       if (response.success) {
-        toast.success(`Strategy created successfully${startActive ? ' and started' : ''}!`)
-        router.push('/strategies')
+        toast.success(
+          `Strategy created successfully${startActive ? ' and started' : ''}!`
+        );
+        router.push('/strategies');
       } else {
-        toast.error(response.error || 'Failed to create strategy')
+        toast.error(response.error || 'Failed to create strategy');
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to create strategy')
+      toast.error(error.response?.data?.error || 'Failed to create strategy');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const addCondition = () => {
     const newCondition: StrategyCondition = {
@@ -104,19 +126,23 @@ export default function NewStrategyPage() {
       operator: 'gt',
       value: 0,
       isActive: true,
-    }
-    setConditions([...conditions, newCondition])
-  }
+    };
+    setConditions([...conditions, newCondition]);
+  };
 
-  const updateCondition = (id: string, field: keyof StrategyCondition, value: any) => {
-    setConditions(conditions.map(c =>
-      c.id === id ? { ...c, [field]: value } : c
-    ))
-  }
+  const updateCondition = (
+    id: string,
+    field: keyof StrategyCondition,
+    value: any
+  ) => {
+    setConditions(
+      conditions.map((c) => (c.id === id ? { ...c, [field]: value } : c))
+    );
+  };
 
   const removeCondition = (id: string) => {
-    setConditions(conditions.filter(c => c.id !== id))
-  }
+    setConditions(conditions.filter((c) => c.id !== id));
+  };
 
   return (
     <div className="space-y-6">
@@ -129,7 +155,9 @@ export default function NewStrategyPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Strategy</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Create New Strategy
+          </h1>
           <p className="text-gray-600 mt-2">
             Set up a new Dollar-Cost Averaging strategy
           </p>
@@ -154,7 +182,9 @@ export default function NewStrategyPage() {
                   className="input"
                   placeholder="e.g., Bitcoin Daily DCA"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -165,7 +195,9 @@ export default function NewStrategyPage() {
                   className="input min-h-[80px] resize-none"
                   placeholder="Optional description of your strategy..."
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                 />
               </div>
 
@@ -174,7 +206,9 @@ export default function NewStrategyPage() {
                 <select
                   className="input"
                   value={formData.exchangeId}
-                  onChange={(e) => setFormData({ ...formData, exchangeId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, exchangeId: e.target.value })
+                  }
                   required
                 >
                   <option value="">Select an exchange</option>
@@ -187,7 +221,10 @@ export default function NewStrategyPage() {
                 {exchanges.length === 0 && (
                   <p className="text-sm text-yellow-600 mt-1">
                     No active exchanges configured.{' '}
-                    <Link href="/exchanges" className="text-primary hover:underline">
+                    <Link
+                      href="/exchanges"
+                      className="text-primary hover:underline"
+                    >
                       Add an exchange
                     </Link>
                   </p>
@@ -201,7 +238,12 @@ export default function NewStrategyPage() {
                   className="input"
                   placeholder="e.g., BTCUSDT"
                   value={formData.pair}
-                  onChange={(e) => setFormData({ ...formData, pair: e.target.value.toUpperCase() })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      pair: e.target.value.toUpperCase(),
+                    })
+                  }
                   required
                 />
               </div>
@@ -222,7 +264,12 @@ export default function NewStrategyPage() {
                 <select
                   className="input"
                   value={formData.amountType}
-                  onChange={(e) => setFormData({ ...formData, amountType: e.target.value as 'fixed' | 'percentage' })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      amountType: e.target.value as 'fixed' | 'percentage',
+                    })
+                  }
                 >
                   <option value="fixed">Fixed Amount</option>
                   <option value="percentage">Percentage</option>
@@ -231,14 +278,22 @@ export default function NewStrategyPage() {
 
               <div>
                 <label className="label">
-                  {formData.amountType === 'fixed' ? 'Amount (USD)' : 'Percentage (%)'} *
+                  {formData.amountType === 'fixed'
+                    ? 'Amount (USD)'
+                    : 'Percentage (%)'}{' '}
+                  *
                 </label>
                 <input
                   type="number"
                   className="input"
                   placeholder={formData.amountType === 'fixed' ? '100' : '10'}
                   value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      amount: parseFloat(e.target.value) || 0,
+                    })
+                  }
                   min="0"
                   step={formData.amountType === 'fixed' ? '1' : '0.1'}
                   required
@@ -250,7 +305,12 @@ export default function NewStrategyPage() {
                 <select
                   className="input"
                   value={formData.frequency}
-                  onChange={(e) => setFormData({ ...formData, frequency: e.target.value as any })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      frequency: e.target.value as any,
+                    })
+                  }
                   required
                 >
                   <option value="hourly">Hourly</option>
@@ -266,7 +326,9 @@ export default function NewStrategyPage() {
                   type="date"
                   className="input"
                   value={formData.startDate}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startDate: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -277,7 +339,9 @@ export default function NewStrategyPage() {
                   type="date"
                   className="input"
                   value={formData.endDate}
-                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endDate: e.target.value })
+                  }
                   min={formData.startDate}
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -299,12 +363,23 @@ export default function NewStrategyPage() {
               {conditions.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-gray-400 mb-2">
-                    <svg className="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <svg
+                      className="h-8 w-8 mx-auto"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
                     </svg>
                   </div>
                   <p className="text-sm text-gray-600 mb-4">
-                    Add conditions to execute trades only when specific criteria are met
+                    Add conditions to execute trades only when specific criteria
+                    are met
                   </p>
                   <Button
                     type="button"
@@ -319,18 +394,29 @@ export default function NewStrategyPage() {
               ) : (
                 <div className="space-y-3">
                   {conditions.map((condition) => (
-                    <div key={condition.id} className="flex items-center gap-2 p-3 border rounded-lg">
+                    <div
+                      key={condition.id}
+                      className="flex items-center gap-2 p-3 border rounded-lg"
+                    >
                       <input
                         type="checkbox"
                         checked={condition.isActive}
-                        onChange={(e) => updateCondition(condition.id, 'isActive', e.target.checked)}
+                        onChange={(e) =>
+                          updateCondition(
+                            condition.id,
+                            'isActive',
+                            e.target.checked
+                          )
+                        }
                         className="rounded"
                       />
 
                       <select
                         className="input text-sm flex-1"
                         value={condition.type}
-                        onChange={(e) => updateCondition(condition.id, 'type', e.target.value)}
+                        onChange={(e) =>
+                          updateCondition(condition.id, 'type', e.target.value)
+                        }
                       >
                         <option value="price_above">Price Above</option>
                         <option value="price_below">Price Below</option>
@@ -341,7 +427,13 @@ export default function NewStrategyPage() {
                       <select
                         className="input text-sm w-20"
                         value={condition.operator}
-                        onChange={(e) => updateCondition(condition.id, 'operator', e.target.value)}
+                        onChange={(e) =>
+                          updateCondition(
+                            condition.id,
+                            'operator',
+                            e.target.value
+                          )
+                        }
                       >
                         <option value="gt">&gt;</option>
                         <option value="gte">≥</option>
@@ -353,7 +445,13 @@ export default function NewStrategyPage() {
                         type="number"
                         className="input text-sm w-24"
                         value={condition.value}
-                        onChange={(e) => updateCondition(condition.id, 'value', parseFloat(e.target.value) || 0)}
+                        onChange={(e) =>
+                          updateCondition(
+                            condition.id,
+                            'value',
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
                         step="0.01"
                       />
 
@@ -387,7 +485,11 @@ export default function NewStrategyPage() {
         {/* Form Actions */}
         <div className="flex flex-col sm:flex-row justify-end gap-4">
           <Link href="/strategies" className="w-full sm:w-auto">
-            <Button variant="outline" type="button" className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              type="button"
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
           </Link>
@@ -412,5 +514,5 @@ export default function NewStrategyPage() {
         </div>
       </form>
     </div>
-  )
+  );
 }

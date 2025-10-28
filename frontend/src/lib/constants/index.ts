@@ -7,8 +7,16 @@ export const EXCHANGE_CONFIGS = {
     baseUrl: 'https://api.binance.com',
     testnetUrl: 'https://testnet.binance.vision',
     supportedPairs: [
-      'BTCUSDT', 'BTCBUSD', 'ETHUSDT', 'ETHBTC', 'ADAUSDT',
-      'DOTUSDT', 'LINKUSDT', 'LTCUSDT', 'BCHUSDT', 'XLMUSDT'
+      'BTCUSDT',
+      'BTCBUSD',
+      'ETHUSDT',
+      'ETHBTC',
+      'ADAUSDT',
+      'DOTUSDT',
+      'LINKUSDT',
+      'LTCUSDT',
+      'BCHUSDT',
+      'XLMUSDT',
     ],
     fees: {
       maker: 0.001,
@@ -22,8 +30,16 @@ export const EXCHANGE_CONFIGS = {
     displayName: 'Coinbase Pro',
     baseUrl: 'https://api.pro.coinbase.com',
     supportedPairs: [
-      'BTC-USD', 'ETH-USD', 'ETH-BTC', 'LTC-USD', 'BCH-USD',
-      'XLM-USD', 'ADA-USD', 'DOT-USD', 'LINK-USD', 'UNI-USD'
+      'BTC-USD',
+      'ETH-USD',
+      'ETH-BTC',
+      'LTC-USD',
+      'BCH-USD',
+      'XLM-USD',
+      'ADA-USD',
+      'DOT-USD',
+      'LINK-USD',
+      'UNI-USD',
     ],
     fees: {
       maker: 0.005,
@@ -37,8 +53,16 @@ export const EXCHANGE_CONFIGS = {
     displayName: 'Kraken',
     baseUrl: 'https://api.kraken.com',
     supportedPairs: [
-      'XXBTZUSD', 'XETHXXBT', 'XXBTZEUR', 'XETHZUSD', 'XXRPXXBT',
-      'XLTCXXBT', 'XXLMXXBT', 'XADAXXBT', 'XXDGXXBT', 'XXBTXXBT'
+      'XXBTZUSD',
+      'XETHXXBT',
+      'XXBTZEUR',
+      'XETHZUSD',
+      'XXRPXXBT',
+      'XLTCXXBT',
+      'XXLMXXBT',
+      'XADAXXBT',
+      'XXDGXXBT',
+      'XXBTXXBT',
     ],
     fees: {
       maker: 0.0026,
@@ -69,7 +93,8 @@ export const DEFAULT_STRATEGY_SETTINGS = {
 export const NOTIFICATION_TEMPLATES = {
   execution_success: {
     title: 'DCA Purchase Completed',
-    message: 'Successfully purchased {quantity} {baseCurrency} at ${price} ({pair})',
+    message:
+      'Successfully purchased {quantity} {baseCurrency} at ${price} ({pair})',
   },
   execution_failed: {
     title: 'DCA Purchase Failed',
@@ -154,5 +179,7 @@ export const WS_EVENTS = {
 } as const;
 
 // Export types
-export type ExchangeConfigType = typeof EXCHANGE_CONFIGS[keyof typeof EXCHANGE_CONFIGS];
-export type FrequencyCronType = typeof FREQUENCY_CRON[keyof typeof FREQUENCY_CRON];
+export type ExchangeConfigType =
+  (typeof EXCHANGE_CONFIGS)[keyof typeof EXCHANGE_CONFIGS];
+export type FrequencyCronType =
+  (typeof FREQUENCY_CRON)[keyof typeof FREQUENCY_CRON];

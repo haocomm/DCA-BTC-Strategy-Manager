@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react'
-import { formatCurrency, formatPercentage } from '@/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
+import { formatCurrency, formatPercentage } from '@/lib/utils';
 
 export function DashboardStats() {
   // Mock data - replace with actual API calls
@@ -16,14 +16,14 @@ export function DashboardStats() {
     },
     {
       title: 'Current Value',
-      value: formatCurrency(14187.50),
+      value: formatCurrency(14187.5),
       change: '+13.5%',
       changeType: 'positive' as const,
       icon: TrendingUp,
     },
     {
       title: 'Total Profit',
-      value: formatCurrency(1687.50),
+      value: formatCurrency(1687.5),
       change: '+13.5%',
       changeType: 'positive' as const,
       icon: Activity,
@@ -35,7 +35,7 @@ export function DashboardStats() {
       changeType: 'positive' as const,
       icon: TrendingDown,
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -48,14 +48,22 @@ export function DashboardStats() {
             <stat.icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-            <div className="text-xl sm:text-2xl font-bold truncate">{stat.value}</div>
+            <div className="text-xl sm:text-2xl font-bold truncate">
+              {stat.value}
+            </div>
             <div className="flex items-center space-x-1 sm:space-x-2 text-xs text-muted-foreground mt-1">
               {stat.changeType === 'positive' ? (
                 <TrendingUp className="h-3 w-3 text-green-500 flex-shrink-0" />
               ) : (
                 <TrendingDown className="h-3 w-3 text-red-500 flex-shrink-0" />
               )}
-              <span className={stat.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}>
+              <span
+                className={
+                  stat.changeType === 'positive'
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                }
+              >
                 {stat.change}
               </span>
               <span className="hidden sm:inline">from last month</span>
@@ -65,5 +73,5 @@ export function DashboardStats() {
         </Card>
       ))}
     </div>
-  )
+  );
 }
